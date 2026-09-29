@@ -1,0 +1,200 @@
+---
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const {
+  title = 'Willing Studio — 作品展示',
+  description = '一个专注于视觉、影像与交互实验的匿名作品档案。',
+} = Astro.props;
+---
+
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="description" content={description} />
+    <meta name="theme-color" content="#aee4e6" />
+    <link rel="icon" href="/favicon.svg" />
+    <title>{title}</title>
+  </head>
+
+  <body>
+    <header class="site-header">
+      <a class="brand" href="/">
+        <span class="brand-mark"></span>
+        WILLING STUDIO
+      </a>
+
+      <nav>
+        <a href="/#works">作品</a>
+        <a href="/#archive">索引</a>
+        <a class="status" href="/#about">
+          <i></i> 接受新想法
+        </a>
+      </nav>
+    </header>
+
+    <main>
+      <slot />
+    </main>
+
+    <footer class="site-footer">
+      <p>只展示作品，不收集访客信息。</p>
+      <p>© {new Date().getFullYear()} WILLING STUDIO</p>
+    </footer>
+  </body>
+</html>
+
+<style is:global>
+  :root {
+    --paper: #f7f5f2;
+    --paper-warm: #fffaf6;
+    --card: #f1eeee;
+    --ink: #193039;
+    --ink-soft: #66767b;
+    --line: rgba(25, 48, 57, 0.13);
+    --blue: #2eaaf5;
+    --blue-deep: #167db9;
+    --aqua: #aee4e6;
+    --coral: #ff4f74;
+    --gold: #f5c342;
+    --mono: ui-monospace, Consolas, monospace;
+
+    font-family: Inter, "PingFang SC", "Microsoft YaHei", sans-serif;
+    color: var(--ink);
+    background: var(--paper);
+  }
+
+  * {
+    box-sizing: border-box;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    margin: 0;
+    min-width: 320px;
+    background: var(--paper);
+  }
+
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  img,
+  video {
+    display: block;
+    max-width: 100%;
+  }
+
+  ::selection {
+    color: white;
+    background: var(--coral);
+  }
+
+  .site-header,
+  .site-footer {
+    width: min(1180px, calc(100% - 40px));
+    margin: 0 auto;
+  }
+
+  .site-header {
+    min-height: 82px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 28px;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 11px;
+    font: 700 0.78rem/1 var(--mono);
+    letter-spacing: 0.12em;
+  }
+
+  .brand-mark {
+    width: 18px;
+    height: 18px;
+    border-radius: 5px 50% 50% 50%;
+    background: var(--coral);
+    transform: rotate(8deg);
+    box-shadow: 9px 6px 0 var(--aqua);
+  }
+
+  nav {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    font-size: 0.9rem;
+  }
+
+  nav a {
+    color: var(--ink-soft);
+  }
+
+  nav a:hover {
+    color: var(--ink);
+  }
+
+  .status {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .status i {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #43c37a;
+  }
+
+  .site-footer {
+    padding: 30px 0 42px;
+    border-top: 1px solid var(--line);
+    display: flex;
+    justify-content: space-between;
+    color: var(--ink-soft);
+    font: 0.75rem/1.5 var(--mono);
+  }
+
+  .pill-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 42px;
+    padding: 0 20px;
+    border-radius: 999px;
+    color: white;
+    background: var(--ink);
+  }
+
+  .pill-button.secondary {
+    color: var(--ink);
+    background: white;
+    border: 1px solid var(--line);
+  }
+
+  @media (max-width: 680px) {
+    .site-header {
+      min-height: 68px;
+    }
+
+    nav > a:not(.status) {
+      display: none;
+    }
+
+    .site-footer {
+      flex-direction: column;
+    }
+  }
+</style>

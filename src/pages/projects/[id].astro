@@ -1,0 +1,185 @@
+---
+import { getCollection, render } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+export async function getStaticPaths() {
+  const projects = await getCollection('projects');
+
+  return projects.map((project) => ({
+    params: { id: project.id },
+    props: { project },
+  }));
+}
+
+const { project } = Astro.props;
+const { Content } = await render(project);
+const {
+  title,
+  summary,
+  year,
+  type,
+  tags,
+  cover,
+  video,
+  source,
+  demo,
+  accent,
+} = project.data;
+---
+
+<BaseLayout title={`${title} — Willing Studio`} description={summary}>
+  <article class="project" style={`--accent:${accent}`}>
+    <a class="back" href="/">← 返回作品列表</a>
+
+    <header>
+      <p class="meta">{type} · {year}</p>
+      <h1>{title}</h1>
+      <p class="summary">{summary}</p>
+
+      <ul>
+        {tags.map((tag) => <li>{tag}</li>)}
+      </ul>
+
+      <div class="links">
+        {
+          demo && (
+            <a href={demo} target="_blank" rel="noopener noreferrer">
+              在线演示 ↗
+            </a>
+          )
+        }
+
+        {
+          source && (
+            <a href={source} target="_blank" rel="noopener noreferrer">
+              查看源码 ↗
+            </a>
+          )
+        }
+      </div>
+    </header>
+
+    {
+      video ? (
+        <video controls poster={cover}>
+          <source src={video} />
+        </video>
+      ) : cover ? (
+        <img class="cover" src={cover} alt={`${title}项目封面`} />
+      ) : (
+        <div class="placeholder">
+          <span>{title}</span>
+        </div>
+      )
+    }
+
+    <section class="content">
+      <Content />
+    </section>
+  </article>
+</BaseLayout>
+
+<style>
+  .project {
+    width: min(1000px, calc(100% - 40px));
+    margin: 0 auto;
+    padding: 60px 0 100px;
+  }
+
+  .back {
+    color: var(--ink-soft);
+    font: 0.8rem/1 var(--mono);
+  }
+
+  header {
+    margin: 70px 0 50px;
+  }
+
+  .meta {
+    color: var(--blue-deep);
+    font: 0.75rem/1 var(--mono);
+  }
+
+  h1 {
+    margin: 18px 0;
+    font-size: clamp(3rem, 8vw, 7rem);
+    line-height: 0.95;
+    letter-spacing: -0.06em;
+  }
+
+  .summary {
+    max-width: 700px;
+    color: var(--ink-soft);
+    font-size: 1.1rem;
+    line-height: 1.8;
+  }
+
+  ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 0;
+    list-style: none;
+  }
+
+  li,
+  .links a {
+    padding: 8px 12px;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+  }
+
+  .links {
+    display: flex;
+    gap: 10px;
+    margin-top: 25px;
+  }
+
+  .placeholder {
+    min-height: 500px;
+    display: grid;
+    place-items: center;
+    border-radius: 28px;
+    background: var(--accent);
+  }
+
+  .placeholder span {
+    max-width: 80%;
+    font-size: clamp(2rem, 7vw, 5rem);
+    font-weight: 700;
+    text-align: center;
+  }
+
+  .cover,
+  video {
+    width: 100%;
+    max-height: 700px;
+    border-radius: 28px;
+    object-fit: cover;
+  }
+
+  .content {
+    width: min(720px, 100%);
+    margin: 70px auto 0;
+    line-height: 1.9;
+  }
+
+  .content :global(p),
+  .content :global(li) {
+    color: var(--ink-soft);
+  }
+
+  @media (max-width: 600px) {
+    .project {
+      padding-top: 35px;
+    }
+
+    header {
+      margin: 45px 0 35px;
+    }
+
+    .placeholder {
+      min-height: 320px;
+    }
+  }
+</style>

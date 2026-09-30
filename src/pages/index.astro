@@ -1,89 +1,620 @@
 ---
 import { getCollection } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
-import ProjectCard from '../components/ProjectCard.astro';
 
-const projects = (await getCollection('projects')).sort((a, b) => a.data.order - b.data.order);
-const featured = projects.filter((project) => project.data.featured);
+const projects = (await getCollection('projects')).sort(
+  (a, b) => a.data.order - b.data.order
+);
 ---
 
-<BaseLayout title="Willing Studio · 作品档案" description="关注影像、交互与视觉实验的匿名作品档案。">
-  <main>
-    <section class="hero shell" id="top">
-      <div class="hero-copy">
-        <p class="eyebrow">SELECTED WORKS · 2026</p>
-        <h1>把想法做成<br /><span>可以观看的作品。</span></h1>
-        <p class="intro">这里记录影像、交互与视觉实验。只展示作品本身，不陈列不必要的个人信息。</p>
-        <div class="hero-actions">
-          <a class="button primary" href="#works">浏览作品</a>
-          <a class="button ghost" href="#archive">查看索引</a>
-        </div>
-      </div>
-
-      <div class="stage" aria-label="抽象几何创作展台">
-        <div class="stage-panel"></div>
-        <div class="stage-lines" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
-        <div class="stage-ball small"></div><div class="stage-ball large"></div>
-        <div class="stage-block"></div><div class="stage-base"></div>
-        <span>WORK / 001</span>
-      </div>
-    </section>
-
-    <div class="ticker" aria-label="作品分类">
-      <span>影像</span><b>✦</b><span>交互</span><b>✦</b><span>视觉实验</span><b>✦</b>
-      <span>代码</span><b>✦</b><span>声音</span><b>✦</b><span>过程记录</span>
-    </div>
-
-    <section class="works shell" id="works">
-      <header class="section-head">
-        <div><p class="eyebrow">FEATURED PROJECTS</p><h2>精选作品</h2></div>
-        <p>每个项目均可包含图集、视频、创作说明、在线演示与源码地址。</p>
-      </header>
-      <div class="project-grid">
-        {featured.map((project, index) => <ProjectCard project={project} index={index} />)}
-      </div>
-    </section>
-
-    <section class="archive shell" id="archive">
-      <header class="section-head compact">
-        <div><p class="eyebrow">PROJECT INDEX</p><h2>作品索引</h2></div>
-        <span class="count">{String(projects.length).padStart(2, '0')} 件作品</span>
-      </header>
-      <div class="archive-list">
-        {projects.map((project, index) => (
-          <a href={`/projects/${project.id}/`} class="archive-row">
-            <span>{String(index + 1).padStart(2, '0')}</span><strong>{project.data.title}</strong>
-            <span>{project.data.type}</span><span>{project.data.year}</span><b>↗</b>
-          </a>
-        ))}
-      </div>
-    </section>
-
-    <section class="privacy shell">
+<BaseLayout title="Willingsoon — 作品档案">
+  <div class="workspace">
+    <aside class="sidebar">
       <div>
-        <p class="eyebrow">ABOUT THIS ARCHIVE</p>
-        <h2>作品在前，身份信息在后。</h2>
-        <p>本站默认不公开真实姓名、学校、住址和私人联系方式。需要合作时，可在具体项目中提供单独的公开联系渠道。</p>
+        <a class="brand" href="/">
+          <img
+            class="brand-avatar"
+            src="/media/avatar.jpg"
+            alt="Willingsoon头像"
+          />
+          <strong>WILLINGSOON</strong>
+        </a>
+
+        <nav>
+          <a class="active" href="#overview">
+            <span>◉</span> 概览
+          </a>
+
+          <a href="#projects">
+            <span>▣</span> 精选作品
+          </a>
+
+          <a href="#index">
+            <span>☷</span> 项目索引
+          </a>
+        </nav>
       </div>
-    </section>
-  </main>
+
+      <div class="side-bottom">
+        <p><i></i> AVAILABLE</p>
+
+        <a
+          href="https://github.com/willingsoon"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          GitHub ↗
+        </a>
+      </div>
+    </aside>
+
+    <main class="dashboard">
+      <header class="topbar">
+        <div>
+          <p>PROJECT ARCHIVE / 2026</p>
+          <h1>作品档案</h1>
+        </div>
+
+        <span>
+          {String(projects.length).padStart(2, '0')} PROJECTS
+        </span>
+      </header>
+
+      <section class="overview" id="overview">
+        <div>
+          <p class="label">OVERVIEW</p>
+          <h2>视觉、影像与交互实验。</h2>
+          <p class="description">
+            一个专注于项目过程与最终成果的个人作品档案。
+          </p>
+        </div>
+
+        <div class="overview-art" aria-hidden="true">
+          <i></i>
+          <i></i>
+          <i></i>
+        </div>
+      </section>
+
+      <section class="projects" id="projects">
+        <div class="section-title">
+          <h2>精选作品</h2>
+          <span>SELECTED WORKS</span>
+        </div>
+
+        <div class="project-grid">
+          {
+            projects.slice(0, 4).map((project, index) => (
+              <article class="project-card">
+                <a
+                  class="project-visual"
+                  href={`/projects/${project.id}/`}
+                  style={`--accent:${project.data.accent}`}
+                >
+                  {
+                    project.data.cover ? (
+                      <img
+                        src={project.data.cover}
+                        alt={`${project.data.title}项目封面`}
+                      />
+                    ) : (
+                      <div class={`art art-${(index % 3) + 1}`}>
+                        <i></i>
+                        <i></i>
+                        <i></i>
+                      </div>
+                    )
+                  }
+
+                  <span>0{index + 1}</span>
+                </a>
+
+                <div class="project-info">
+                  <div>
+                    <p>
+                      {project.data.type} · {project.data.year}
+                    </p>
+
+                    <h3>
+                      <a href={`/projects/${project.id}/`}>
+                        {project.data.title}
+                      </a>
+                    </h3>
+                  </div>
+
+                  <a
+                    class="open"
+                    href={`/projects/${project.id}/`}
+                    aria-label={`查看${project.data.title}`}
+                  >
+                    ↗
+                  </a>
+                </div>
+              </article>
+            ))
+          }
+        </div>
+      </section>
+
+      <section class="project-index" id="index">
+        <div class="section-title">
+          <h2>项目索引</h2>
+          <span>ALL PROJECTS</span>
+        </div>
+
+        <div class="index-list">
+          {
+            projects.map((project, index) => (
+              <a href={`/projects/${project.id}/`}>
+                <span>
+                  {String(index + 1).padStart(2, '0')}
+                </span>
+
+                <strong>{project.data.title}</strong>
+                <span>{project.data.type}</span>
+                <span>{project.data.year}</span>
+                <b>↗</b>
+              </a>
+            ))
+          }
+        </div>
+      </section>
+    </main>
+  </div>
 </BaseLayout>
 
-<style>
-  .hero{display:grid;grid-template-columns:minmax(0,1fr) minmax(380px,.9fr);gap:clamp(3rem,8vw,8rem);align-items:center;min-height:760px;padding-block:7rem 5rem}
-  .hero h1{max-width:780px;margin:1rem 0 1.5rem;font-size:clamp(3.6rem,7vw,7.6rem);font-weight:680;letter-spacing:-.075em;line-height:.95}.hero h1 span{color:var(--blue)}
-  .intro{max-width:620px;color:var(--ink-soft);font-size:clamp(1rem,1.3vw,1.2rem);line-height:1.9}.hero-actions{display:flex;gap:.8rem;margin-top:2.25rem}
-  .stage{position:relative;min-height:490px;overflow:hidden;border:1px solid var(--line);border-radius:2.5rem;background:linear-gradient(145deg,#a8e4e8,#d8f5f3 62%,#fdf7f3);box-shadow:0 35px 90px rgba(60,130,140,.22);isolation:isolate}
-  .stage:after{position:absolute;inset:0;background:linear-gradient(115deg,rgba(255,255,255,.45),transparent 38%);content:''}.stage-panel,.stage-lines,.stage-ball,.stage-block,.stage-base{position:absolute;filter:drop-shadow(0 22px 20px rgba(43,102,112,.18))}
-  .stage-panel{left:16%;bottom:24%;width:45%;height:45%;background:#b9e9eb}.stage-lines{right:24%;bottom:24%;display:flex;gap:11px;width:34%;height:62%}.stage-lines i{display:block;flex:1;background:#fff6f2}
-  .stage-ball{border-radius:50%;background:#9ddde2}.stage-ball.small{left:29%;bottom:23%;width:68px;height:68px}.stage-ball.large{right:10%;bottom:19%;width:155px;height:155px}.stage-block{left:39%;bottom:17%;width:105px;height:58px;background:#b3e5e6}.stage-base{left:10%;right:7%;bottom:10%;height:58px;background:#fffaf7}
-  .stage>span{position:absolute;top:1.25rem;right:1.4rem;z-index:2;padding:.55rem .8rem;border:1px solid var(--line);border-radius:99px;background:rgba(255,255,255,.62);font:650 .7rem/1 var(--mono);letter-spacing:.12em}
-  .ticker{display:flex;justify-content:center;gap:clamp(1rem,3vw,3rem);overflow:hidden;padding:1.1rem 2rem;border-block:1px solid var(--line);color:var(--ink-soft);font-size:.82rem;letter-spacing:.18em;white-space:nowrap}.ticker b{color:var(--coral)}
-  .works,.archive,.privacy{padding-block:7.5rem}.section-head{display:flex;justify-content:space-between;gap:2rem;align-items:end;margin-bottom:3rem}.section-head h2,.privacy h2{margin:.35rem 0 0;font-size:clamp(2.5rem,4vw,4.7rem);letter-spacing:-.055em}.section-head>p{max-width:490px;color:var(--ink-soft);line-height:1.8}
-  .project-grid{display:grid;grid-template-columns:repeat(12,1fr);gap:1.25rem}.project-grid>:global(a){grid-column:span 6}.project-grid>:global(a:first-child){grid-column:span 7}.project-grid>:global(a:nth-child(2)){grid-column:span 5}
-  .archive{border-top:1px solid var(--line)}.compact{margin-bottom:2rem}.count{color:var(--ink-soft);font: .78rem/1 var(--mono)}.archive-list{border-top:1px solid var(--line)}
-  .archive-row{display:grid;grid-template-columns:55px minmax(0,1fr) minmax(100px,.35fr) 70px 28px;gap:1rem;align-items:center;padding:1.45rem 0;border-bottom:1px solid var(--line);color:inherit;text-decoration:none;transition:.2s}.archive-row:hover{padding-inline:.6rem;color:var(--blue-deep)}.archive-row span{color:var(--ink-soft);font:.75rem/1.3 var(--mono)}.archive-row b{color:var(--coral)}
-  .privacy>div{padding:clamp(2.2rem,6vw,6rem);border-radius:2.5rem;background:var(--ink);color:#fff;box-shadow:0 30px 80px rgba(24,46,53,.16)}.privacy .eyebrow{color:#9ddfe1}.privacy div>p:last-child{max-width:720px;color:rgba(255,255,255,.68);line-height:1.9}
-  @media(max-width:860px){.hero{grid-template-columns:1fr;min-height:auto;padding-top:5rem}.stage{min-height:420px}.project-grid>:global(a){grid-column:1/-1!important}.section-head{display:block}.section-head>p{margin-top:1rem}}
-  @media(max-width:600px){.hero{padding-top:3.5rem}.hero h1{font-size:3.25rem}.stage{min-height:340px;border-radius:1.8rem}.stage-ball.large{width:110px;height:110px}.archive-row{grid-template-columns:38px 1fr 28px}.archive-row span:nth-of-type(n+2){display:none}}
+<style is:global>
+  .site-header,
+  .site-footer {
+    display: none;
+  }
+
+  body {
+    overflow: hidden;
+    background: #f6f7f8;
+  }
+
+  .workspace {
+    min-height: 100vh;
+    display: grid;
+    grid-template-columns: 220px minmax(0, 1fr);
+  }
+
+  .sidebar {
+    height: 100vh;
+    padding: 26px 18px;
+    border-right: 1px solid #d8dee4;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    background: #ffffff;
+  }
+
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    color: #24292f;
+    font: 700 0.78rem/1 var(--mono);
+    letter-spacing: 0.08em;
+  }
+
+  .brand-avatar {
+    width: 42px;
+    height: 42px;
+    flex: 0 0 auto;
+    border: 1px solid #d0d7de;
+    border-radius: 50%;
+    object-fit: cover;
+    object-position: center;
+  }
+
+  .sidebar nav {
+    margin-top: 42px;
+    display: grid;
+    gap: 5px;
+  }
+
+  .sidebar nav a {
+    padding: 11px 12px;
+    border-radius: 7px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: #57606a;
+    font-size: 0.84rem;
+  }
+
+  .sidebar nav a span {
+    width: 18px;
+    color: #6e7781;
+    text-align: center;
+  }
+
+  .sidebar nav a:hover,
+  .sidebar nav a.active {
+    color: #24292f;
+    background: #f0f3f6;
+  }
+
+  .side-bottom {
+    display: grid;
+    gap: 12px;
+    font: 0.7rem/1 var(--mono);
+  }
+
+  .side-bottom p {
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #57606a;
+  }
+
+  .side-bottom i {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #2da44e;
+    box-shadow: 0 0 0 4px rgba(45, 164, 78, 0.1);
+  }
+
+  .side-bottom a {
+    color: #0969da;
+  }
+
+  .dashboard {
+    height: 100vh;
+    min-width: 0;
+    overflow: hidden;
+    padding: 20px 26px;
+    display: grid;
+    grid-template-rows: auto auto minmax(0, 1fr) auto;
+    gap: 14px;
+  }
+
+  .topbar,
+  .section-title,
+  .project-info {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .topbar {
+    min-height: 52px;
+  }
+
+  .topbar p,
+  .topbar > span,
+  .section-title span,
+  .project-info p {
+    margin: 0;
+    color: #6e7781;
+    font: 0.66rem/1 var(--mono);
+    letter-spacing: 0.07em;
+  }
+
+  .topbar h1 {
+    margin: 5px 0 0;
+    color: #24292f;
+    font-size: 1.5rem;
+    letter-spacing: -0.04em;
+  }
+
+  .topbar > span {
+    padding: 7px 10px;
+    border: 1px solid #d0d7de;
+    border-radius: 999px;
+    background: white;
+  }
+
+  .overview {
+    min-height: 116px;
+    padding: 17px 20px;
+    border: 1px solid #d0d7de;
+    border-radius: 12px;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 230px;
+    align-items: center;
+    gap: 24px;
+    overflow: hidden;
+    background: white;
+  }
+
+  .label {
+    margin: 0 0 8px;
+    color: #0969da;
+    font: 700 0.64rem/1 var(--mono);
+  }
+
+  .overview h2 {
+    margin: 0;
+    color: #24292f;
+    font-size: clamp(1.35rem, 2.4vw, 2.15rem);
+    letter-spacing: -0.045em;
+  }
+
+  .description {
+    margin: 8px 0 0;
+    color: #6e7781;
+    font-size: 0.82rem;
+  }
+
+  .overview-art {
+    position: relative;
+    height: 82px;
+    overflow: hidden;
+    border-radius: 9px;
+    background: var(--aqua);
+  }
+
+  .overview-art i {
+    position: absolute;
+    display: block;
+    background: #fffaf6;
+    box-shadow: 8px 10px 18px rgba(25, 48, 57, 0.12);
+  }
+
+  .overview-art i:nth-child(1) {
+    width: 72px;
+    height: 54px;
+    left: 28px;
+    bottom: 14px;
+  }
+
+  .overview-art i:nth-child(2) {
+    width: 50px;
+    height: 50px;
+    top: 16px;
+    right: 34px;
+    border-radius: 50%;
+  }
+
+  .overview-art i:nth-child(3) {
+    width: 130px;
+    height: 11px;
+    right: 18px;
+    bottom: 10px;
+  }
+
+  .projects {
+    min-height: 0;
+    display: grid;
+    grid-template-rows: auto minmax(0, 1fr);
+    gap: 9px;
+  }
+
+  .section-title h2 {
+    margin: 0;
+    color: #24292f;
+    font-size: 0.94rem;
+  }
+
+  .project-grid {
+    min-height: 0;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px;
+  }
+
+  .project-card {
+    min-width: 0;
+    min-height: 0;
+    padding: 10px;
+    border: 1px solid #d0d7de;
+    border-radius: 12px;
+    display: grid;
+    grid-template-rows: minmax(115px, 1fr) auto;
+    gap: 9px;
+    background: white;
+  }
+
+  .project-visual {
+    position: relative;
+    min-height: 0;
+    overflow: hidden;
+    border-radius: 8px;
+    background: var(--accent);
+  }
+
+  .project-visual img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .project-visual > span {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    color: #24292f;
+    font: 700 0.64rem/1 var(--mono);
+  }
+
+  .art,
+  .art i {
+    position: absolute;
+  }
+
+  .art {
+    inset: 0;
+  }
+
+  .art i {
+    display: block;
+    background: #fffaf6;
+    box-shadow: 10px 12px 22px rgba(25, 48, 57, 0.14);
+  }
+
+  .art i:nth-child(1) {
+    width: 35%;
+    height: 55%;
+    left: 18%;
+    top: 20%;
+    transform: rotate(-5deg);
+  }
+
+  .art i:nth-child(2) {
+    width: 24%;
+    aspect-ratio: 1;
+    right: 16%;
+    top: 20%;
+    border-radius: 50%;
+  }
+
+  .art i:nth-child(3) {
+    width: 48%;
+    height: 12%;
+    right: 12%;
+    bottom: 17%;
+  }
+
+  .art-2 i:nth-child(2) {
+    background: var(--coral);
+  }
+
+  .project-info h3 {
+    margin: 5px 0 0;
+    color: #24292f;
+    font-size: 1rem;
+  }
+
+  .open {
+    width: 30px;
+    height: 30px;
+    border: 1px solid #d0d7de;
+    border-radius: 7px;
+    display: grid;
+    place-items: center;
+    color: #0969da;
+  }
+
+  .project-index {
+    display: grid;
+    gap: 7px;
+  }
+
+  .index-list {
+    border: 1px solid #d0d7de;
+    border-radius: 10px;
+    overflow: hidden;
+    background: white;
+  }
+
+  .index-list a {
+    min-height: 34px;
+    padding: 0 12px;
+    display: grid;
+    grid-template-columns: 36px 1fr 140px 55px 20px;
+    gap: 10px;
+    align-items: center;
+    border-bottom: 1px solid #d8dee4;
+    color: #24292f;
+    font-size: 0.74rem;
+  }
+
+  .index-list a:last-child {
+    border-bottom: 0;
+  }
+
+  .index-list a:hover {
+    background: #f6f8fa;
+  }
+
+  .index-list span {
+    color: #6e7781;
+    font: 0.65rem/1 var(--mono);
+  }
+
+  .index-list b {
+    color: var(--coral);
+  }
+
+  @media (max-width: 760px) {
+    body {
+      overflow: auto;
+    }
+
+    .workspace {
+      display: block;
+    }
+
+    .sidebar {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      width: 100%;
+      height: auto;
+      padding: 12px 14px;
+      border-right: 0;
+      border-bottom: 1px solid #d8dee4;
+      flex-direction: row;
+      align-items: center;
+    }
+
+    .brand-avatar {
+      width: 34px;
+      height: 34px;
+    }
+
+    .side-bottom {
+      display: none;
+    }
+
+    .sidebar > div:first-child,
+    .sidebar nav {
+      display: flex;
+      align-items: center;
+    }
+
+    .sidebar nav {
+      margin: 0 0 0 18px;
+    }
+
+    .sidebar nav a {
+      padding: 9px;
+      font-size: 0;
+    }
+
+    .sidebar nav a span {
+      font-size: 0.9rem;
+    }
+
+    .dashboard {
+      height: auto;
+      min-height: 100vh;
+      overflow: visible;
+      padding: 18px 14px;
+      display: block;
+    }
+
+    .dashboard > * {
+      margin-bottom: 18px;
+    }
+
+    .overview {
+      grid-template-columns: 1fr;
+    }
+
+    .overview-art {
+      display: none;
+    }
+
+    .project-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .project-card {
+      min-height: 300px;
+    }
+
+    .index-list a {
+      grid-template-columns: 30px 1fr 20px;
+    }
+
+    .index-list a span:nth-of-type(n + 2) {
+      display: none;
+    }
+  }
 </style>
